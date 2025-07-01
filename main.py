@@ -4,8 +4,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from src.config.path import path_dir
 from src.api.routes import routes as api_routes
+from src.config.path import path_dir
 from src.controller.routes import routes as controller_routes
 
 app = FastAPI(
@@ -32,18 +32,47 @@ app.add_middleware(
 )
 
 template = Jinja2Templates(directory=path_dir["template"])
+# context = {
+#     "request": None,
+#     "code": 0,
+#     "msg": None,
+# }
 
 
 @app.exception_handler(StarletteHTTPException)
 async def custom_http_exception_handler(request: Request, exc: StarletteHTTPException):
-    if exc.status_code == 404:
-        return template.TemplateResponse("page/error/404.html", {"request": request}, status_code=404)
+    # global context
+    # context["request"] = request,
+    # context["code"] = exc.status_code,
+    # context["msg"] = f"Page {exc.detail}"
+    context = {
+        "request": request,
+        "code": exc.status_code,
+        "msg": None
+    }
+
+    if context["code"] == 404:
+        context["msg"] = f"Page {exc.detail}"
+        return template.TemplateResponse(
+            name="page/error.html",
+            context=context,
+            status_code=context["code"]
+        )
 
 
 @app.exception_handler(Exception)
 async def internal_error_handler(request: Request, exc: Exception):
     print(f"\nError : {exc}\n")
-    return template.TemplateResponse("page/error/500.html", {"request": request}, status_code=500)
+    context = {
+        "request": request,
+        "code": 500,
+        "msg": None
+    }
+    return template.TemplateResponse(
+        name="page/error.html",
+        context=context,
+        status_code=context["code"]
+    )
 
 for route in controller_routes:
     app.include_router(route)

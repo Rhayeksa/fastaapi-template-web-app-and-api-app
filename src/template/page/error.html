@@ -1,0 +1,22 @@
+{% extends "base.html" %} {% block apps %}
+<div
+  class="container-fluid d-flex justify-content-center align-items-center"
+  style="min-height: 100vh"
+>
+  <div class="card shadow text-center" style="min-width: 450px">
+    <div class="card-header h1">Error</div>
+    <div class="card-body">
+      <div class="card-title h3">
+        {% if code %}{{code}}{% else %}500{% endif %}
+      </div>
+      <p class="card-text font-monospace">
+        {% if msg %}{{msg}}{% else %}Internal Server Error{% endif %}
+      </p>
+    </div>
+    <div class="card-footer p-3">
+      <a href="/">Back To Home</a>
+    </div>
+  </div>
+</div>
+
+{% endblock apps %}

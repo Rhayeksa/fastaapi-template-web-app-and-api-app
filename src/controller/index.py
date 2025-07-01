@@ -14,18 +14,17 @@ template = Jinja2Templates(directory=path_dir["template"])
     include_in_schema=False
 )
 async def method(request: Request):
-    result = {
-        "page": "page/index.html",
+    context = {
+        "request": request,
         "code": 200,
-        "context": {
-            "request": request,
+        "data": {
             "a": None,
             "b": None,
             "c": None,
         }
     }
     return template.TemplateResponse(
-        name=result["page"],
-        context=result["context"],
-        status_code=200
+        name="page/index.html",
+        context=context,
+        status_code=context["code"]
     )
