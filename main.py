@@ -32,19 +32,10 @@ app.add_middleware(
 )
 
 template = Jinja2Templates(directory=path_dir["template"])
-# context = {
-#     "request": None,
-#     "code": 0,
-#     "msg": None,
-# }
 
 
 @app.exception_handler(StarletteHTTPException)
 async def custom_http_exception_handler(request: Request, exc: StarletteHTTPException):
-    # global context
-    # context["request"] = request,
-    # context["code"] = exc.status_code,
-    # context["msg"] = f"Page {exc.detail}"
     context = {
         "request": request,
         "code": exc.status_code,
